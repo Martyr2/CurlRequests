@@ -89,7 +89,7 @@
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_SSL_VERIFYHOST => $sslVerify ? 2 : 0,
             CURLOPT_SSL_VERIFYPEER => $sslVerify,
-            CURLOPT_POSTFIELDS => $data
+            CURLOPT_POSTFIELDS => is_array($data) ? http_build_query($data) : $data
         ];
 
         $setOptions = $options + $defaultOptions;
@@ -99,8 +99,6 @@
         foreach ($headers as $headerName => $headerValue) {
             $h[] = "$headerName: $headerValue";
         }
-
-        $h['content-length'] = extension_loaded('mbstring') ? mb_strlen($data, 'UTF-8') : strlen($data);
 
         $setOptions[CURLOPT_HTTPHEADER] = $h;
 
