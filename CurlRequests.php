@@ -9,7 +9,6 @@
  * - Also easy to turn off SSL Verification for testing
  * - Quick setting of extra cURL options with default overrides
  * - Easy to add custom headers
- * - POST data will also work with mbstring extension if enabled for use with UTF-8 encoding
  * 
  * @author Martyr2
  * @copyright 2021 The Coders Lexicon
