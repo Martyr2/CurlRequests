@@ -1,6 +1,6 @@
 # CurlRequests Class
 
-This is a simple and easy to use class for making cURL calls in PHP. It attempts to abstract away many of the nuances of using the cURL functions and gives a consistent response in return to all calls (successful or not). Consumers of this class will always get back a `stdClass` object with information on the success or failure of the request. 
+This is a simple and easy to use class for making cURL calls in PHP. It attempts to abstract away many of the nuances of using the cURL functions and gives a consistent response in return to all calls (successful or not). Consumers of this class will get back a `stdClass` object with information on the success or it will throw an exception in the case of cURL error. 
 
 ## Features
 
@@ -13,20 +13,20 @@ This is a simple and easy to use class for making cURL calls in PHP. It attempts
 
 ## Usage
 
-This class is used in a static context and only provides two methods, `GET` and `POST`. Below is a quick example of how you can use this. Notice you don't need to look for `false` return values or deal with exceptions. If it is a cURL error, the properties `errorno` and `errormsg` can be used to get the error. Otherwise, you can use `status_code` to determine the response.
+This class is used in a static context and only provides two methods, `GET` and `POST`. Below is a quick example of how you can use this. Notice you don't need to look for `false` return values or deal with exceptions. If it is a cURL error, it will throw an exception with the cURL error message and number... simple.
 
 ```php
-// Typical GET request
-$result = CurlRequests::get('https://www.example.com');
-
-// If a cURL error happened... easy
-if (property_exists($result, 'errorno')) {
-    error_log("Yikes! cURL error {$result->errorno} happened with message {$result->errormsg}");
+try {
+    // Typical GET request
+    $result = CurlRequests::get('https://www.example.com');
+} catch (Exception $e) {
+    error_log("Yikes! cURL error {$e->getCode()} happened with message {$e->getMessage()}");
     return;
 }
 
+
 // If successful, $result will have a status_code and content property
-if (property_exists($result, 'status_code') && ($result->status_code === 200)) {
+if ($result->status_code === 200) {
     echo "Success! Here is your content {$result->content}";
 }
 ```

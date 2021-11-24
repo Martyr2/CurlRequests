@@ -24,7 +24,8 @@
      * @param array $headers - Optional headers to add to request
      * @param array $options - Optional cURL "setopt" options to configure the request
      * @param boolean $sslVerify - Optional flag to turn off SSL verification (keep on in production)
-     * @return stdClass Returns stdClass with status code and content or stdClass with errorno and errormsg set in failure.
+     * @return stdClass Returns stdClass with status code and content or throws an exception if cURL error.
+     * @throws Exception If there was a cURL error
      */
     public static function get(string $url, array $headers = [], array $options = [], bool $sslVerify = true) 
     {
@@ -52,16 +53,15 @@
         curl_setopt_array($ch, $setOptions);
 
         $content = curl_exec($ch);
-        $std = new \stdClass();
 
         if ($content === false) {
-            $std->errorno = curl_errno($ch);
-            $std->errormsg = curl_strerror($std->errorno);
-            return $std;
+            $errNo = curl_errno($ch);
+            throw new Exception("cURL error: " . curl_strerror($errNo), $errNo);
         }
 
         $sc = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+        $std = new \stdClass();
         $std->status_code = $sc;
         $std->content = $content;
 
@@ -76,7 +76,8 @@
      * @param array $headers - Optional headers to add to request
      * @param array $options - Optional cURL "setopt" options to configure the request
      * @param boolean $sslVerify - Optional flag to turn off SSL verification (keep on in production)
-     * @return stdClass Returns stdClass with status code and content or stdClass with errorno and errormsg on failure.
+     * @return stdClass Returns stdClass with status code and content or throws an exception if cURL error.
+     * @throws Exception If there was a cURL error
      */
     public static function post(string $url, $data, array $headers = [], array $options = [], bool $sslVerify = true) 
     {
@@ -105,16 +106,15 @@
         curl_setopt_array($ch, $setOptions);                                                                
 
         $content = curl_exec($ch);
-        $std = new \stdClass();
 
         if ($content === false) {
-            $std->errorno = curl_errno($ch);
-            $std->errormsg = curl_strerror($std->errorno);
-            return $std;
+            $errNo = curl_errno($ch);
+            throw new Exception("cURL error: " . curl_strerror($errNo), $errNo);
         }
 
         $sc = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+        $std = new \stdClass();
         $std->status_code = $sc;
         $std->content = $content;
 
